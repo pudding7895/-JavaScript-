@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>判断质数</title>
+</head>
+<body>
+    <script>
+        //封装函数：判断传入的数字是否是质数
+        //普通判断
+        function isPrimeNormal(num){
+            if(num<=1){
+                return false
+            }else{
+                for(var i=2;i<num;i++){
+                    if(num%i==0){
+                        return false
+                    }
+                }
+                return true
+            }
+            
+        }
+
+        //更高效的判断
+        function isPrime(num){
+            if(num<=1){
+                return false
+            }else{
+                //1.获取num的平方根
+                var temp=parseInt(Math.sqrt(num))
+                //2.循环判断
+                for(var i=2;i<temp;i++){
+                    if(num%i==0){
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+
+        //验证函数
+        alert(isPrimeNormal(3))
+        alert(isPrimeNormal(11))
+        alert(isPrimeNormal(123))
+        alert(isPrimeNormal(41))
+        alert(isPrimeNormal(-1))
+        alert(isPrime(3))
+        alert(isPrime(11))
+        alert(isPrime(123))
+        alert(isPrime(41))
+        alert(isPrime(-1))
+    </script>
+</body>
+</html>
