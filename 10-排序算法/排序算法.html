@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排序算法</title>
+</head>
+<body>
+    <script>
+        /*
+        排序算法有很多：冒泡排序、选择排序、插入排序、归并排序、计数排序(counting sort)、基数排序(radix sort)、希尔排序、堆排序、桶排序
+
+        简单排序：冒泡排序、选择排序、插入排序
+        高级排序：希尔排序、快速排序
+        */
+
+        //创建一个列表封装我们的数据项，便于后序的排序算法实现
+        //封装ArrayList
+        function ArrayList(){
+            //属性
+            this.array=[]
+
+            //方法
+            //将数据可以插入到数组中的方法
+            ArrayList.prototype.insert=function(item){
+                this.array.push(item)
+            }
+            //toString方法(便于以后的测试)
+            ArrayList.prototype.toString=function(){
+                return this.array.join('-')
+            }
+            //交换两个位置的数据
+            ArrayList.prototype.swap=function(m,n){
+                //经典写法
+                // var temp=this.array[m]
+                // this.array[m]=this.array[n]
+                // this.array[n]=temp
+                //ES6写法
+                [this.array[m],this.array[n]]=[this.array[n],this.array[m]]
+            }
+
+            //实现排序算法
+            //在不同的子文件实现
+        }
+
+        //测试类
+        var list=new ArrayList()
+
+        //插入元素
+        list.insert(66)
+        list.insert(88)
+        list.insert(12)
+        list.insert(87)
+        list.insert(100)
+        list.insert(5)
+        list.insert(566)
+        list.insert(23)
+        alert(list)
+    </script>
+</body>
+</html>

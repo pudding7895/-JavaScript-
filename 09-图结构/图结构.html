@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图结构</title>
+</head>
+<body>
+    <script src="dict.js"></script>
+    <script src="queue.js"></script>
+    <script>
+        //图的特点：一组顶点（通常用V：Vertex表示顶点的集合）、一组边（通常用E：Edge表示边的集合）
+        //边是顶点和顶点之间的连线，边可以是有向的，也可以是无向的，比如A---B通常表示无向，A-->B通常表示有向
+
+        //图的术语（部分）：
+          //顶点：图中的一个节点
+          //边：顶点和顶点之间的连线
+          //相邻顶点：由一条边连接在一起的顶点
+          //度：相邻顶点的数量
+          //路径：顶点V1,V2,...,Vn的一个连续序列
+            //简单路径：不包含重复的顶点
+            //回路：第一个顶点和左后一个顶点相同
+          //无向图：所有的边都没有方向
+          //有向图：图中的边是有方向的
+          //无权图：边没有携带权重（图中的边是没有任何意义的，即不能说V1-V2的边比V3-V4的边更远或用的时间更长）
+          //有权图：边有一定的权重（权重可以是任意你希望表示的数据，比如距离或者花费的时间或票价）
+        
+        //图的表示
+          //顶点：抽象成A、B、C、D，用数组存储起来
+          //边：
+            //邻接矩阵：让每个节点和一个整数相关联，该整数作为数组的下标值（用一个二维数组来表示顶点之间的连接）
+              //稀疏图是容易造成空间浪费
+            //邻接表：由途中每个顶点以及和顶点相邻的顶点列表组成，列表的存储用数组、链表、字典（哈希表）都可以
+              //计算“出度”简单而计算“入度”麻烦，需要构造一个“逆邻接表”才能有效计算“入度”
+
+        //封装
+        function Graph(){
+          //属性：顶点（数组）、边（字典）
+          this.vertexes=[]
+          this.edges=new Dictionary()
+
+          //方法
+          //1.添加方法
+          //1.1 添加顶点的方法
+          Graph.prototype.addVertex=function(v){
+            this.vertexes.push(v)
+            this.edges.set(v,[])
+          }
+          //1.2 添加边的方法
+          Graph.prototype.addEdge=function(v1,v2){
+            this.edges.get(v1).push(v2)
+            this.edges.get(v2).push(v1) //无向图需要互相添加
+          }
+
+          //2.实现toString方法
+          Graph.prototype.toString=function(){
+            //2.1 定义字符串，保存最终的结果
+            var resultString=' '
+            //2.2 遍历所有的顶点，以及顶点对应的边
+            for(var i=0;i<this.vertexes.length;i++){
+              resultString+=this.vertexes[i]+'->'
+              var vEdges=this.edges.get(this.vertexes[i])
+              for(var j=0;j<vEdges.length;j++){
+                resultString+=vEdges[j]+' '
+              }
+              resultString+='\n'
+            }
+            return resultString
+          }
+
+          //3.图的遍历
+          //图的遍历思想和树的遍历思想是一样的。图的遍历意味着需要将图中的每个顶点访问一遍，并且不能有重复的访问
+          //有两种算法可以对图进行遍历：广度优先搜索、深度优先搜索，两种遍历算法，都需要明确指定第一个被访问的顶点
+            //广度优先搜索(Breadth-First Search,BFS)：基于队列，入队列的顶点先被探索
+            //深度优先搜索(Depth-First Search,DFS)：基于栈或使用递归，通过将顶点存入栈中，顶点是沿着路径被探索的，存在新的相邻顶点就去访问
+          //为了记录顶点是否被访问过，使用三种颜色来反应它们的状态
+            //白色：表示该顶点还没有被访问过
+            //灰色：表示该顶点被访问过，但并未被探索过
+            //黑色：表示该顶点被访问过且被完全探索过
+          //3.1 初始化状态颜色
+          Graph.prototype.initializeColor=function(){
+            var colors=[]
+            for(var i=0;i<this.vertexes.length;i++){
+              colors[this.vertexes[i]]='white'
+            }
+            return colors
+          }
+          //3.2 广度优先搜索
+          //代码思路：
+            //创建一个队列Q；
+            //将v标注为被发现的（灰色），并将v加入队列Q；
+            //如果Q非空，执行下面的步骤：将v从Q中取出队列->将v标注为被发现的灰色->将v所有的未被访问过的白色邻接点，加入到队列中->将v标注为黑色
+          Graph.prototype.bfs=function(initV,handler){
+            //3.2.1 初始化颜色
+            var colors=this.initializeColor()
+            //3.2.2 创建队列
+            var queue=new Queue()
+            //3.2.3 将顶点加入到队列中
+            queue.enqueue(initV)
+            //3.2.4 循环从队列中取出元素
+            while(!queue.isEmpty()){
+              //从队列中取出一个顶点
+              var v=queue.dequeue()
+              //获取和顶点相连的另外顶点
+              var vList=this.edges.get(v)
+              //将v的颜色设置成灰色
+              colors[v]='gray'
+              //遍历所有的顶点，并且加入到队列中
+              for(var i=0;i<vList.length;i++){
+                var other=vList[i]
+                if(colors[other]=='white'){
+                  colors[other]='gray'
+                  queue.enqueue(other)
+                }
+              }
+              //访问顶点
+              handler(v)
+              //将顶点设置为黑色
+              colors[v]='black'
+            }
+          }
+          //3.3 深度优先搜索
+          Graph.prototype.dfs=function(initV,handler){
+            //3.3.1 初始化颜色
+            var colors=this.initializeColor()
+            //3.3.2 从某个顶点开始依次递归访问
+            this.dfsVisit(initV,colors,handler)
+          }
+          Graph.prototype.dfsVisit=function(v,colors,handler){
+            //将颜色设置为灰色
+            colors[v]='gray'
+            //处理v顶点
+            handler(v)
+            //访问v相连的顶点
+            var vList=this.edges.get(v)
+            for(var i=0;i<vList.length;i++){
+              var other=vList[i]
+              if(colors[other]=='white'){
+                this.dfsVisit(other,colors,handler)
+              }
+            }
+            //将v设置成黑色
+            colors[v]='black'
+          }
+        }
+
+        //测试代码
+        //1.创建图结构
+        var graph=new Graph()
+        //2.添加顶点
+        var myVertexes=['A','B','C','D','E','F','G','H','I']
+        for(var i=0;i<myVertexes.length;i++){
+          graph.addVertex(myVertexes[i])
+        }
+        //3.添加边
+        graph.addEdge('A', 'B');
+        graph.addEdge('A', 'C');
+        graph.addEdge('A', 'D');
+        graph.addEdge('C', 'D');
+        graph.addEdge('C', 'G');
+        graph.addEdge('D', 'G');
+        graph.addEdge('D', 'H');
+        graph.addEdge('B', 'E');
+        graph.addEdge('B', 'F');
+        graph.addEdge('E', 'I');
+        //4.测试结果
+        alert(graph)
+        //5.测试bfs
+        var result=''
+        graph.bfs(graph.vertexes[0],function(v){
+          result+=v+' '
+        })
+        alert(result)
+        //6.测试dfs
+        var result=''
+        graph.dfs(graph.vertexes[0],function(v){
+          result+=v+' '
+        })
+        alert(result)
+    </script>
+</body>
+</html>
+

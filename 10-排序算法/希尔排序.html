@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>希尔排序</title>
+</head>
+<body>
+    <script>
+        //封装ArrayList
+        function ArrayList(){
+            //属性
+            this.array=[]
+
+            //方法
+            //将数据可以插入到数组中的方法
+            ArrayList.prototype.insert=function(item){
+                this.array.push(item)
+            }
+            //toString方法
+            ArrayList.prototype.toString=function(){
+                return this.array.join('-')
+            }
+            // //交换数组中m和n两个位置的数据
+            // ArrayList.prototype.swap=function(m,n){
+            //     [this.array[m],this.array[n]]=[this.array[n],this.array[m]]
+            // }
+
+            //
+
+            //希尔排序
+            ArrayList.prototype.shellSort=function(){
+                //1.获取数组的长度
+                var length=this.array.length
+                //2.初始化的增量
+                var gap=Math.floor(length/2)
+                //3.while循环（gap不断地减小）
+                while(gap>=1){
+                    //4.以gap作为间隔，进行分组，对分组进行插入排序
+                    for(var i=gap;i<length;i++){
+                        var temp=this.array[i]
+                        var j=i
+                        while(this.array[j-gap]>temp&&j>gap-1 ){
+                            this.array[j]=this.array[j-gap]
+                            j-=gap
+                        }
+                        //5.将j位置的元素赋值temp
+                        this.array[j]=temp 
+                    }
+                    gap=Math.floor(gap/2)
+                }
+            }
+        }
+
+        //测试类
+        var list=new ArrayList()
+
+        //插入元素
+        list.insert(66)
+        list.insert(88)
+        list.insert(12)
+        list.insert(87)
+        list.insert(100)
+        list.insert(5)
+        list.insert(566)
+        list.insert(23)
+        alert(list)
+
+        //验证希尔排序
+        list.shellSort()
+        alert(list)
+    </script>
+</body>
+</html>

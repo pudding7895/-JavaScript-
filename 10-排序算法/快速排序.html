@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速排序</title>
+</head>
+<body>
+    <script>
+        //封装ArrayList
+        function ArrayList(){
+            //属性
+            this.array=[]
+
+            //方法
+            //将数据可以插入到数组中的方法
+            ArrayList.prototype.insert=function(item){
+                this.array.push(item)
+            }
+            //toString方法
+            ArrayList.prototype.toString=function(){
+                return this.array.join('-')
+            }
+            //交换数组中m和n两个位置的数据
+            ArrayList.prototype.swap=function(m,n){
+                [this.array[m],this.array[n]]=[this.array[n],this.array[m]]
+            }
+
+            //
+
+            //快速排序
+            //选择枢纽（主元）
+            ArrayList.prototype.median=function(left,right){
+                //1.取出中间的位置
+                var center=Math.floor((left+right)/2)
+                //2.判断大小，并且进行交换
+                if(this.array[left]>this.array[center]){
+                    this.swap(left,center)
+                }
+                if(this.array[center]>this.array[right]){
+                    this.swap(center,right)
+                }
+                if(this.array[left]>this.array[center]){
+                    this.swap(left,center)
+                }
+                //3.将center换到right-1的位置
+                this.swap(center,right-1)
+                return this.array[right-1]
+            }
+            ArrayList.prototype.quickSort=function(){
+                this.quick(0,this.array.length-1)
+                //1.获取数组的长度
+                var length=this.array.length
+            }
+            ArrayList.prototype.quick=function(left,right){
+                //1.结束条件
+                if(left>=right) return
+                //2.获取枢纽
+                var pivot=this.median(left,right)
+                //3.定义变量，用于记录当前找到的位置
+                var i=left
+                var j=right-1
+                //4.开始进行交换
+                while(true){
+                    while(this.array[++i]<pivot){}
+                    while(this.array[--j]>pivot){}
+                    if(i<j){
+                        this.swap(i,j)
+                    }else{
+                        break
+                    }
+                }
+                //5.将枢纽放置在正确的位置，即i的位置
+                this.swap(i,right-1)
+                //6.分而治之
+                this.quick(left,i-1)
+                this.quick(i+1,right)
+            }
+        }
+
+        //测试类
+        var list=new ArrayList()
+
+        //插入元素
+        list.insert(66)
+        list.insert(88)
+        list.insert(12)
+        list.insert(87)
+        list.insert(100)
+        list.insert(5)
+        list.insert(566)
+        list.insert(23)
+        alert(list)
+
+        //验证快速排序
+        list.quickSort()
+        alert(list)
+    </script>
+</body>
+</html>

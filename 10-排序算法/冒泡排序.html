@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冒泡排序</title>
+</head>
+<body>
+    <script>
+        //封装ArrayList
+        function ArrayList(){
+            //属性
+            this.array=[]
+
+            //方法
+            //将数据可以插入到数组中的方法
+            ArrayList.prototype.insert=function(item){
+                this.array.push(item)
+            }
+            //toString方法
+            ArrayList.prototype.toString=function(){
+                return this.array.join('-')
+            }
+            //交换数组中m和n两个位置的数据
+            ArrayList.prototype.swap=function(m,n){
+                [this.array[m],this.array[n]]=[this.array[n],this.array[m]]
+            }
+
+            //冒泡排序
+            ArrayList.prototype.bubbleSort=function(){
+                //1.获取数组的长度
+                length=this.array.length
+                //2.外层循环
+                //第一次：j=length-1，比较到倒数第一个位置
+                //第二次：j=length-2，比较到倒数第二个位置
+                //...
+                for(var j=length-1;j>=0;j--){
+                    //3.内层循环
+                    //第一次进来：  i=0，比较0和1位置的两个数据
+                    //最后一次进来：i=length-2，比较length-2和length-1位置的两个数据 
+                    for(var i=0;i<length-1;i++){
+                        if(this.array[i]>this.array[i+1]){
+                            //如果0位置大于1位置的数据，交换两个数据
+                            this.swap(i,i+1)
+                        }
+                    }
+                }
+            }
+        }
+
+        //测试类
+        var list=new ArrayList()
+
+        //插入元素
+        list.insert(66)
+        list.insert(88)
+        list.insert(12)
+        list.insert(87)
+        list.insert(100)
+        list.insert(5)
+        list.insert(566)
+        list.insert(23)
+        alert(list)
+
+        //验证冒泡排序
+        list.bubbleSort()
+        alert(list)
+    </script>
+</body>
+</html>
